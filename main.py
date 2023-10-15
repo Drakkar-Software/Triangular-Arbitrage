@@ -4,7 +4,9 @@ from typing import List
 from tqdm.auto import trange, tqdm
 from itertools import combinations
 from dataclasses import dataclass
+
 import octobot_commons.symbols
+import octobot_commons.constants as constants
 
 @dataclass
 class ShortTicker:
@@ -23,12 +25,19 @@ def get_symbol_from_key(key_symbol: str) -> octobot_commons.symbols.Symbol:
     except:
         return None
 
-def get_last_prices(tickers):
+def is_delisted_symbols(exchange_time, ticker, threshold = 1 * constants.DAYS_TO_SECONDS * constants.MSECONDS_TO_SECONDS) -> bool:
+    ticker_time = ticker['timestamp']
+    if (exchange_time - ticker_time <= threshold):
+        return False
+    print(f"Detected delisted symbol {ticker['symbol']}")
+    return True
+
+def get_last_prices(exchange_time, tickers):
     return [
         ShortTicker(symbol=get_symbol_from_key(key), 
         last_price=tickers[key]['close']) 
         for key, value in tickers.items()
-        if tickers[key]['close'] is not None
+        if tickers[key]['close'] is not None and not is_delisted_symbols(exchange_time, tickers[key])
     ]
 
 def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
@@ -82,13 +91,14 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
 
 async def main():
     exchange = ccxt.binance()
+    # await exchange.load_markets()
     try:
         tickers = await fetch_tickers(exchange)
-        last_prices = get_last_prices(tickers)
+        exchange_time = exchange.milliseconds()
+        last_prices = get_last_prices(exchange_time, tickers)
+        print(f"Testing {len(last_prices)} symbols...")
         best_opportunity, best_profit = get_best_opportunity(last_prices)
-        print(f"start by selling {best_opportunity[0].symbol} then sell {best_opportunity[1].symbol} and finally sell {best_opportunity[2].symbol} to make a profit {(best_profit - 1) * 100}")
-    except Exception as e:
-        raise e
+        print(f"Start by selling {best_opportunity[0].symbol} then sell {best_opportunity[1].symbol} and finally sell {best_opportunity[2].symbol} to make a profit {(best_profit - 1) * 100}")
     finally:
         await exchange.close()
 
