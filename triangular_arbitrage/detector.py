@@ -1,14 +1,14 @@
 import os
 import ccxt.async_support as ccxt
 from typing import List
-from tqdm.auto import trange, tqdm
+from tqdm.auto import tqdm
 from itertools import combinations
 from dataclasses import dataclass
 
 import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
 
-from triangular_detector import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV
+from triangular_arbitrage import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV
 
 @dataclass
 class ShortTicker:

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
 
-import triangular_detector.detector
+import triangular_arbitrage.detector
 
 if __name__ == "__main__":
     load_dotenv()
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     
     # start arbitrage detection
     print("Scanning...")
-    best_opportunities, best_profit = asyncio.run(triangular_detector.detector.run_detection())
+    best_opportunities, best_profit = asyncio.run(triangular_arbitrage.detector.run_detection())
     def opportunity_symbol(opportunity):
         return symbols.parse_symbol(str(opportunity.symbol))
     
