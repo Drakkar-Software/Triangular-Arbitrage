@@ -1,10 +1,13 @@
 import asyncio
-import triangular_detector.detector
+from dotenv import load_dotenv
 
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
 
+import triangular_detector.detector
+
 if __name__ == "__main__":
+    load_dotenv()
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
     if benchmark:
         import time

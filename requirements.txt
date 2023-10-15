@@ -1,4 +1,5 @@
 tqdm
 ccxt
 
+python-dotenv
 OctoBot-Commons

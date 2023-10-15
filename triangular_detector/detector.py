@@ -1,3 +1,4 @@
+import os
 import ccxt.async_support as ccxt
 from typing import List
 from tqdm.auto import trange, tqdm
@@ -6,6 +7,8 @@ from dataclasses import dataclass
 
 import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
+
+from triangular_detector import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV
 
 @dataclass
 class ShortTicker:
@@ -95,6 +98,23 @@ async def run_detection():
         exchange_time = exchange.milliseconds()
         last_prices = get_last_prices(exchange_time, tickers)
         best_opportunity, best_profit = get_best_opportunity(last_prices)
+        if os.getenv(REDIS_HOST_ENV, None) is not None:
+            upload_result(best_opportunity, best_profit)
     finally:
         await exchange.close()
         return best_opportunity, best_profit
+
+def upload_result(best_opportunities, best_profit):
+    import redis
+    redis_client = redis.Redis(
+        host=os.getenv(REDIS_HOST_ENV, None),
+        port=os.getenv(REDIS_PORT_ENV, None),
+        password=os.getenv(REDIS_PASSWORD_ENV, None),
+        ssl=True
+    )
+
+    data = {
+        'best_opportunity': [str(best_opportunity.symbol) for best_opportunity in best_opportunities],
+        'best_profit': best_profit
+    }
+    redis_client.json().set(f"{os.getenv(REDIS_KEY_ENV, None)}", '$', data)
