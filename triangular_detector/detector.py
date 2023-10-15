@@ -1,4 +1,3 @@
-import asyncio
 import ccxt.async_support as ccxt
 from typing import List
 from tqdm.auto import trange, tqdm
@@ -29,14 +28,14 @@ def is_delisted_symbols(exchange_time, ticker, threshold = 1 * constants.DAYS_TO
     ticker_time = ticker['timestamp']
     if (exchange_time - ticker_time <= threshold):
         return False
-    print(f"Detected delisted symbol {ticker['symbol']}")
+    # print(f"Detected delisted symbol {ticker['symbol']}")
     return True
 
 def get_last_prices(exchange_time, tickers):
     return [
         ShortTicker(symbol=get_symbol_from_key(key), 
         last_price=tickers[key]['close']) 
-        for key, value in tickers.items()
+        for key, _ in tickers.items()
         if tickers[key]['close'] is not None and not is_delisted_symbols(exchange_time, tickers[key])
     ]
 
@@ -95,7 +94,7 @@ async def run_detection():
         tickers = await fetch_tickers(exchange)
         exchange_time = exchange.milliseconds()
         last_prices = get_last_prices(exchange_time, tickers)
-        best_opportunity, best_profit = get_best_opportunity(last_prices) # symbols.parse_symbol(best_opportunity[0].symbol).merged_str_symbol(market_separator='to buy')
+        best_opportunity, best_profit = get_best_opportunity(last_prices)
     finally:
         await exchange.close()
         return best_opportunity, best_profit
