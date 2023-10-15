@@ -1,4 +1,4 @@
-# Triangular Opportunity Detector
+# Triangular Arbitrage by OctoBot
 
 This Python-based project utilizes the [ccxt library](https://github.com/ccxt/ccxt) and [OctoBot library](https://github.com/Drakkar-Software/OctoBot) to detect potential triangular arbitrage opportunities in cryptocurrency markets.
 
