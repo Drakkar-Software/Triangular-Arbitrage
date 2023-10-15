@@ -1,4 +1,5 @@
 import os
+import time
 import ccxt.async_support as ccxt
 from typing import List
 from tqdm.auto import tqdm
@@ -115,6 +116,7 @@ def upload_result(best_opportunities, best_profit):
 
     data = {
         'best_opportunity': [str(best_opportunity.symbol) for best_opportunity in best_opportunities],
-        'best_profit': best_profit
+        'best_profit': best_profit,
+        'timestamp': time.time()
     }
     redis_client.json().set(f"{os.getenv(REDIS_KEY_ENV, None)}", '$', data)
