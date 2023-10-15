@@ -95,10 +95,7 @@ async def run_detection():
         tickers = await fetch_tickers(exchange)
         exchange_time = exchange.milliseconds()
         last_prices = get_last_prices(exchange_time, tickers)
-        print(f"Testing {len(last_prices)} symbols...")
         best_opportunity, best_profit = get_best_opportunity(last_prices) # symbols.parse_symbol(best_opportunity[0].symbol).merged_str_symbol(market_separator='to buy')
-        def opportunity_symbol(opportunity):
-            return symbols.parse_symbol(str(opportunity.symbol))
-        print(f"Start by selling {str(opportunity_symbol(best_opportunity[0]).base)} to {str(opportunity_symbol(best_opportunity[0]).quote)} then sell {str(opportunity_symbol(best_opportunity[1]).base)} to {str(opportunity_symbol(best_opportunity[1]).quote)} and finally sell {str(opportunity_symbol(best_opportunity[2]).base)} to {str(opportunity_symbol(best_opportunity[2]).quote)} to make a profit of {(best_profit - 1) * 100}%")
     finally:
         await exchange.close()
+        return best_opportunity, best_profit

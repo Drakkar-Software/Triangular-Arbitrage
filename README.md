@@ -26,9 +26,10 @@ python3 main.py
 
 Example output on Binance:
 ```
-Testing 1264 symbols...
 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
+-------------------------------------------
 Start by selling QKC to USDT then sell USDT to BTC and finally sell BTC to QKC to make a profit 3.0077136787178382%
+-------------------------------------------
 ```
 
 ## Help
