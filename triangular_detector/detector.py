@@ -5,12 +5,12 @@ from tqdm.auto import trange, tqdm
 from itertools import combinations
 from dataclasses import dataclass
 
-import octobot_commons.symbols
+import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
 
 @dataclass
 class ShortTicker:
-    symbol: octobot_commons.symbols.Symbol
+    symbol: symbols.Symbol
     last_price: float
 
 
@@ -19,9 +19,9 @@ async def fetch_tickers(exchange):
         return await exchange.fetch_tickers()
     return []
 
-def get_symbol_from_key(key_symbol: str) -> octobot_commons.symbols.Symbol:
+def get_symbol_from_key(key_symbol: str) -> symbols.Symbol:
     try:
-        return octobot_commons.symbols.Symbol(key_symbol)
+        return symbols.parse_symbol(key_symbol)
     except:
         return None
 
@@ -90,13 +90,15 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
     return best_triplet, best_profit
 
 async def run_detection():
-    exchange = ccxt.kucoin()
+    exchange = ccxt.binance()
     try:
         tickers = await fetch_tickers(exchange)
         exchange_time = exchange.milliseconds()
         last_prices = get_last_prices(exchange_time, tickers)
         print(f"Testing {len(last_prices)} symbols...")
-        best_opportunity, best_profit = get_best_opportunity(last_prices)
-        print(f"Start by selling {best_opportunity[0].symbol} then sell {best_opportunity[1].symbol} and finally sell {best_opportunity[2].symbol} to make a profit {(best_profit - 1) * 100}")
+        best_opportunity, best_profit = get_best_opportunity(last_prices) # symbols.parse_symbol(best_opportunity[0].symbol).merged_str_symbol(market_separator='to buy')
+        def opportunity_symbol(opportunity):
+            return symbols.parse_symbol(str(opportunity.symbol))
+        print(f"Start by selling {str(opportunity_symbol(best_opportunity[0]).base)} to {str(opportunity_symbol(best_opportunity[0]).quote)} then sell {str(opportunity_symbol(best_opportunity[1]).base)} to {str(opportunity_symbol(best_opportunity[1]).quote)} and finally sell {str(opportunity_symbol(best_opportunity[2]).base)} to {str(opportunity_symbol(best_opportunity[2]).quote)} to make a profit of {(best_profit - 1) * 100}%")
     finally:
         await exchange.close()
