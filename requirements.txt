@@ -1,0 +1,4 @@
+tqdm
+ccxt
+
+OctoBot-Commons
