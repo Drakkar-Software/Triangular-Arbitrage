@@ -11,7 +11,7 @@ app = Flask(__name__)
 cache.init_app(app)
 
 @app.route("/")
-@cache.cached(timeout=60 * 10) # cache it 10min
+@cache.cached(timeout=os.getenv('CACHE', 60*60)) # cache it 1h by default
 def get_data():
     # start arbitrage detection
     print("Scanning...")
