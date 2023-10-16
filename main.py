@@ -15,13 +15,13 @@ if __name__ == "__main__":
     
     # start arbitrage detection
     print("Scanning...")
-    best_opportunities, best_profit = asyncio.run(triangular_arbitrage.detector.run_detection())
+    best_opportunities, best_profit, exchange_name = asyncio.run(triangular_arbitrage.detector.run_detection())
     def opportunity_symbol(opportunity):
         return symbols.parse_symbol(str(opportunity.symbol))
     
     # Display arbitrage detection result
     print("-------------------------------------------")
-    print(f"Start by selling {str(opportunity_symbol(best_opportunities[0]).base)} to {str(opportunity_symbol(best_opportunities[0]).quote)} then sell {str(opportunity_symbol(best_opportunities[1]).base)} to {str(opportunity_symbol(best_opportunities[1]).quote)} and finally sell {str(opportunity_symbol(best_opportunities[2]).base)} to {str(opportunity_symbol(best_opportunities[2]).quote)} to make a profit of {(best_profit - 1) * 100}%")
+    print(f"[{exchange_name}] Start by selling {str(opportunity_symbol(best_opportunities[0]).base)} to {str(opportunity_symbol(best_opportunities[0]).quote)} then sell {str(opportunity_symbol(best_opportunities[1]).base)} to {str(opportunity_symbol(best_opportunities[1]).quote)} and finally sell {str(opportunity_symbol(best_opportunities[2]).base)} to {str(opportunity_symbol(best_opportunities[2]).quote)} to make a profit of {(best_profit - 1) * 100}%")
     print("-------------------------------------------")
 
     if benchmark:

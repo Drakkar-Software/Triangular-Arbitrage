@@ -92,20 +92,21 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
 
     return best_triplet, best_profit
 
-async def run_detection():
-    exchange = ccxt.binance()
+async def run_detection(exchange_name = "binance"):
+    exchange_class = getattr(ccxt, exchange_name)
+    exchange = exchange_class()
     try:
         tickers = await fetch_tickers(exchange)
         exchange_time = exchange.milliseconds()
         last_prices = get_last_prices(exchange_time, tickers)
         best_opportunity, best_profit = get_best_opportunity(last_prices)
         if os.getenv(REDIS_HOST_ENV, None) is not None:
-            upload_result(best_opportunity, best_profit)
+            upload_result(best_opportunity, best_profit, exchange.id)
     finally:
         await exchange.close()
-        return best_opportunity, best_profit
+        return best_opportunity, best_profit, exchange.name
 
-def upload_result(best_opportunities, best_profit):
+def upload_result(best_opportunities, best_profit, exchange_id):
     import redis
     redis_client = redis.Redis(
         host=os.getenv(REDIS_HOST_ENV, None),
@@ -117,6 +118,7 @@ def upload_result(best_opportunities, best_profit):
     data = {
         'best_opportunity': [str(best_opportunity.symbol) for best_opportunity in best_opportunities],
         'best_profit': best_profit,
+        'exchange_id': exchange_id,
         'timestamp': time.time()
     }
-    redis_client.json().set(f"{os.getenv(REDIS_KEY_ENV, None)}", '$', data)
+    redis_client.json().set(f"{os.getenv(REDIS_KEY_ENV, None)}:{exchange_id}", '$', data)

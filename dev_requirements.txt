@@ -2,4 +2,3 @@ pytest
 
 redis
 Flask
-Flask-Caching
