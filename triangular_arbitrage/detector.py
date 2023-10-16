@@ -51,7 +51,7 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
         if ticker.symbol is not None:
             currencies.add(ticker.symbol.base)
             currencies.add(ticker.symbol.quote)
-    
+
     best_profit = 0
     best_triplet = None
 
@@ -59,7 +59,7 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
         return f"{a}/{b}"
 
     # Try all combinations of three currencies.
-    for a, b, c in tqdm(list(combinations(currencies, 3))):
+    for a, b, c in tqdm(combinations(currencies, 3)):
         # Look up the tickers in the dictionary instead of searching through the list.
         a_to_b = ticker_dict.get(get_opportunity_symbol(a,b))
         b_to_c = ticker_dict.get(get_opportunity_symbol(b,c))
@@ -92,19 +92,27 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
 
     return best_triplet, best_profit
 
-async def run_detection(exchange_name = "binance"):
+async def get_exchange_data(exchange_name):
     exchange_class = getattr(ccxt, os.getenv(EXCHANGE_NAME_ENV, exchange_name))
     exchange = exchange_class()
-    try:
-        tickers = await fetch_tickers(exchange)
-        exchange_time = exchange.milliseconds()
-        last_prices = get_last_prices(exchange_time, tickers)
-        best_opportunity, best_profit = get_best_opportunity(last_prices)
-        if os.getenv(REDIS_HOST_ENV, None) is not None:
-            upload_result(best_opportunity, best_profit, exchange.id)
-    finally:
-        await exchange.close()
-        return best_opportunity, best_profit, exchange.name
+    tickers = await fetch_tickers(exchange)
+    exchange_time = exchange.milliseconds()
+    await exchange.close()
+    return tickers, exchange_time
+
+async def get_exchange_last_prices(exchange_name):
+    tickers, exchange_time = await get_exchange_data(exchange_name)
+    last_prices = get_last_prices(exchange_time, tickers)
+    return last_prices
+
+async def run_detection(exchange_name = "binance"):
+    exchange = os.getenv(EXCHANGE_NAME_ENV, exchange_name)
+    last_prices = await get_exchange_last_prices(exchange)
+    best_opportunity, best_profit = get_best_opportunity(last_prices)
+    if os.getenv(REDIS_HOST_ENV, None) is not None:
+        upload_result(best_opportunity, best_profit, exchange)
+    
+    return best_opportunity, best_profit, exchange
 
 def upload_result(best_opportunities, best_profit, exchange_id):
     import redis
