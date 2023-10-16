@@ -2,12 +2,16 @@ import asyncio
 import os
 from dotenv import load_dotenv
 from flask import Flask, jsonify
+from flask_caching import Cache
 
 import triangular_arbitrage.detector
 
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 app = Flask(__name__)
+cache.init_app(app)
 
 @app.route("/")
+@cache.cached(timeout=60 * 10) # cache it 10min
 def get_data():
     # start arbitrage detection
     print("Scanning...")
