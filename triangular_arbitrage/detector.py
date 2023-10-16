@@ -9,7 +9,7 @@ from dataclasses import dataclass
 import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
 
-from triangular_arbitrage import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV
+from triangular_arbitrage import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV, EXCHANGE_NAME_ENV
 
 @dataclass
 class ShortTicker:
@@ -93,7 +93,7 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
     return best_triplet, best_profit
 
 async def run_detection(exchange_name = "binance"):
-    exchange_class = getattr(ccxt, exchange_name)
+    exchange_class = getattr(ccxt, os.getenv(EXCHANGE_NAME_ENV, exchange_name))
     exchange = exchange_class()
     try:
         tickers = await fetch_tickers(exchange)
