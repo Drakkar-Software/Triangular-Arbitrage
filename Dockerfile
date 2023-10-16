@@ -12,4 +12,4 @@ RUN pip3 install --no-cache-dir -U setuptools wheel pip \
     && pip3 install --no-cache-dir -r requirements.txt -r dev_requirements.txt \
     && python3 setup.py install
 
-ENTRYPOINT ["python3", "main.py"]
+ENTRYPOINT ["python3", "server.py"]
