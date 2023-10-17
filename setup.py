@@ -1,8 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-PROJECT_NAME = "octobot_triangular_arbitrage"
-VERSION = "0.0.1"  # major.minor.revision
+from triangular_arbitrage import PROJECT_NAME, VERSION
 
 PACKAGES = find_packages(
     exclude=[
@@ -21,7 +20,6 @@ setup(
     name=PROJECT_NAME,
     version=VERSION,
     url='https://github.com/Drakkar-Software/Triangular-Arbitrage',
-    license='GPL-3.0',
     author='Drakkar-Software',
     author_email='contact@drakkar.software',
     description='Triangular arbitrage by OctoBot',
@@ -32,7 +30,7 @@ setup(
     test_suite="tests",
     zip_safe=False,
     data_files=[],
-    include_package_data=True,  # copy non python files on install
+    include_package_data=True,
     install_requires=REQUIRED,
     python_requires=REQUIRES_PYTHON,
     classifiers=[
