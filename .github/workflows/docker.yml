@@ -1,4 +1,4 @@
-name: Triangular-Opportunity-Detector - Docker
+name: Triangular Arbitrage - Docker
 on:
   push:
     branches:

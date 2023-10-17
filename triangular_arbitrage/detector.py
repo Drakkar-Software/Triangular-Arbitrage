@@ -1,4 +1,5 @@
-import os
+# pylint: disable=W0702, C0325
+
 import ccxt.async_support as ccxt
 from typing import List
 from tqdm.auto import tqdm
@@ -8,8 +9,6 @@ from dataclasses import dataclass
 import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
 
-from triangular_arbitrage import EXCHANGE_NAME_ENV
-
 @dataclass
 class ShortTicker:
     symbol: symbols.Symbol
@@ -17,9 +16,7 @@ class ShortTicker:
 
 
 async def fetch_tickers(exchange):
-    if (exchange.has['fetchTickers']):
-        return await exchange.fetch_tickers()
-    return []
+    return await exchange.fetch_tickers() if exchange.has['fetchTickers'] else []
 
 def get_symbol_from_key(key_symbol: str) -> symbols.Symbol:
     try:
@@ -29,10 +26,7 @@ def get_symbol_from_key(key_symbol: str) -> symbols.Symbol:
 
 def is_delisted_symbols(exchange_time, ticker, threshold = 1 * constants.DAYS_TO_SECONDS * constants.MSECONDS_TO_SECONDS) -> bool:
     ticker_time = ticker['timestamp']
-    if (exchange_time - ticker_time <= threshold):
-        return False
-    # print(f"Detected delisted symbol {ticker['symbol']}")
-    return True
+    return not (exchange_time - ticker_time <= threshold)
 
 def get_last_prices(exchange_time, tickers):
     return [
@@ -43,6 +37,7 @@ def get_last_prices(exchange_time, tickers):
     ]
 
 def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
+    # pylint: disable=W1114
     ticker_dict = {str(ticker.symbol): ticker for ticker in tickers if ticker.symbol is not None}
 
     currencies = set()
