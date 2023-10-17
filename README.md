@@ -28,9 +28,11 @@ python3 main.py
 
 Example output on Binance:
 ```
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
 -------------------------------------------
-Start by selling QKC to USDT then sell USDT to BTC and finally sell BTC to QKC to make a profit 3.0077136787178382%
+New 1.0354% binance opportunity:
+1. sell WIN/BNB
+2. sell BNB/BRL
+3. buy WIN/BRL
 -------------------------------------------
 ```
 

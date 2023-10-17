@@ -3,7 +3,7 @@ import asyncio
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
 
-import triangular_arbitrage.detector
+import triangular_arbitrage.detector as detector
 
 if __name__ == "__main__":
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
@@ -14,13 +14,23 @@ if __name__ == "__main__":
     # start arbitrage detection
     print("Scanning...")
     exchange_name = "binance"
-    best_opportunities, best_profit = asyncio.run(triangular_arbitrage.detector.run_detection(exchange_name))
+    best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name))
     def opportunity_symbol(opportunity):
         return symbols.parse_symbol(str(opportunity.symbol))
     
+    def get_order_side(opportunity: detector.ShortTicker):
+        return 'buy' if opportunity.reversed else 'sell'
+
+    def get_symbol(opportunity: detector.ShortTicker):
+        if opportunity.reversed:
+            return str(symbols.Symbol(f"{opportunity.symbol.quote}/{opportunity.symbol.base}"))
+        return str(opportunity.symbol)
+
     # Display arbitrage detection result
     print("-------------------------------------------")
-    print(f"[{exchange_name}] Start by selling {str(opportunity_symbol(best_opportunities[0]).base)} to {str(opportunity_symbol(best_opportunities[0]).quote)} then sell {str(opportunity_symbol(best_opportunities[1]).base)} to {str(opportunity_symbol(best_opportunities[1]).quote)} and finally sell {str(opportunity_symbol(best_opportunities[2]).base)} to {str(opportunity_symbol(best_opportunities[2]).quote)} to make a profit of {(best_profit - 1) * 100}%")
+    print(f"New {round(best_profit, 4)}% {exchange_name} opportunity:")
+    for i in range(3):
+        print(f"{i+1}. {get_order_side(best_opportunities[i])} {get_symbol(best_opportunities[i])}")
     print("-------------------------------------------")
 
     if benchmark:
