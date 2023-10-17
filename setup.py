@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-PROJECT_NAME = "Triangular-Arbitrage"
+PROJECT_NAME = "octobot_triangular_arbitrage"
 VERSION = "0.0.1"  # major.minor.revision
 
 PACKAGES = find_packages(
