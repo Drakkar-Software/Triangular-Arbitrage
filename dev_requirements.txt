@@ -1,2 +1,13 @@
 pytest
+pytest-pep8
+pytest-cov
+pytest-asyncio
+
+coverage
+
+twine
+pip
+setuptools
+wheel
+
 pylint

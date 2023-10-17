@@ -1,4 +1,6 @@
-# Triangular Arbitrage by OctoBot
+# Triangular Arbitrage by OctoBot [1.0.0](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
+[![PyPI](https://img.shields.io/pypi/v/OctoBot-Triangular-Arbitrage.svg)](https://pypi.python.org/pypi/OctoBot-Triangular-Arbitrage/)
+[![Dockerhub](https://img.shields.io/docker/pulls/drakkarsoftware/octobot-triangular-arbitrage.svg?logo=docker)](https://hub.docker.com/r/drakkarsoftware/octobot-triangular-arbitrage)
 
 This Python-based project utilizes the [ccxt library](https://github.com/ccxt/ccxt) and [OctoBot library](https://github.com/Drakkar-Software/OctoBot) to detect potential triangular arbitrage opportunities in cryptocurrency markets.
 
