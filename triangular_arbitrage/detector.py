@@ -1,5 +1,4 @@
 import os
-import datetime
 import ccxt.async_support as ccxt
 from typing import List
 from tqdm.auto import tqdm
@@ -9,7 +8,7 @@ from dataclasses import dataclass
 import octobot_commons.symbols as symbols
 import octobot_commons.constants as constants
 
-from triangular_arbitrage import REDIS_HOST_ENV, REDIS_PASSWORD_ENV, REDIS_PORT_ENV, REDIS_KEY_ENV, EXCHANGE_NAME_ENV
+from triangular_arbitrage import EXCHANGE_NAME_ENV
 
 @dataclass
 class ShortTicker:
@@ -93,7 +92,7 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
     return best_triplet, best_profit
 
 async def get_exchange_data(exchange_name):
-    exchange_class = getattr(ccxt, os.getenv(EXCHANGE_NAME_ENV, exchange_name))
+    exchange_class = getattr(ccxt, exchange_name)
     exchange = exchange_class()
     tickers = await fetch_tickers(exchange)
     exchange_time = exchange.milliseconds()
@@ -105,28 +104,7 @@ async def get_exchange_last_prices(exchange_name):
     last_prices = get_last_prices(exchange_time, tickers)
     return last_prices
 
-async def run_detection(exchange_name = "binance"):
-    exchange = os.getenv(EXCHANGE_NAME_ENV, exchange_name)
-    last_prices = await get_exchange_last_prices(exchange)
-    best_opportunity, best_profit = get_best_opportunity(last_prices)
-    if os.getenv(REDIS_HOST_ENV, None) is not None:
-        upload_result(best_opportunity, best_profit, exchange)
-    
-    return best_opportunity, best_profit, exchange
-
-def upload_result(best_opportunities, best_profit, exchange_id):
-    import redis
-    redis_client = redis.Redis(
-        host=os.getenv(REDIS_HOST_ENV, None),
-        port=os.getenv(REDIS_PORT_ENV, None),
-        password=os.getenv(REDIS_PASSWORD_ENV, None),
-        ssl=True
-    )
-
-    data = {
-        'best_opportunity': [str(best_opportunity.symbol) for best_opportunity in best_opportunities],
-        'best_profit': best_profit,
-        'exchange_id': exchange_id,
-        'timestamp': datetime.datetime.utcnow().timestamp()
-    }
-    redis_client.json().set(f"{os.getenv(REDIS_KEY_ENV, None)}:{exchange_id}", '$', data)
+async def run_detection(exchange_name):
+    last_prices = await get_exchange_last_prices(exchange_name)
+    best_opportunity, best_profit = get_best_opportunity(last_prices)    
+    return best_opportunity, best_profit
