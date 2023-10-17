@@ -1,5 +1,4 @@
 import asyncio
-from dotenv import load_dotenv
 
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
@@ -7,7 +6,6 @@ import octobot_commons.os_util as os_util
 import triangular_arbitrage.detector
 
 if __name__ == "__main__":
-    load_dotenv()
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
     if benchmark:
         import time
@@ -15,7 +13,8 @@ if __name__ == "__main__":
     
     # start arbitrage detection
     print("Scanning...")
-    best_opportunities, best_profit, exchange_name = asyncio.run(triangular_arbitrage.detector.run_detection())
+    exchange_name = "binance"
+    best_opportunities, best_profit = asyncio.run(triangular_arbitrage.detector.run_detection(exchange_name))
     def opportunity_symbol(opportunity):
         return symbols.parse_symbol(str(opportunity.symbol))
     
