@@ -13,6 +13,7 @@ import octobot_commons.constants as constants
 class ShortTicker:
     symbol: symbols.Symbol
     last_price: float
+    reversed: bool = False
 
 
 async def fetch_tickers(exchange):
@@ -63,17 +64,17 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
         if not a_to_b:
             b_to_a = ticker_dict.get(get_opportunity_symbol(b,a))
             if b_to_a:
-                a_to_b = ShortTicker(get_opportunity_symbol(a,b), 1/b_to_a.last_price)
+                a_to_b = ShortTicker(symbols.Symbol(get_opportunity_symbol(a,b)), 1/b_to_a.last_price, reversed=True)
 
         if not b_to_c:
             c_to_b = ticker_dict.get(get_opportunity_symbol(c,b))
             if c_to_b:
-                b_to_c = ShortTicker(get_opportunity_symbol(b,c), 1/c_to_b.last_price)
+                b_to_c = ShortTicker(symbols.Symbol(get_opportunity_symbol(b,c)), 1/c_to_b.last_price, reversed=True)
 
         if not c_to_a:
             a_to_c = ticker_dict.get(get_opportunity_symbol(a,c))
             if a_to_c:
-                c_to_a = ShortTicker(get_opportunity_symbol(c,a), 1/a_to_c.last_price)
+                c_to_a = ShortTicker(symbols.Symbol(get_opportunity_symbol(c,a)), 1/a_to_c.last_price, reversed=True)
 
         if not all([a_to_b, b_to_c, c_to_a]):
             continue
