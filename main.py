@@ -21,16 +21,11 @@ if __name__ == "__main__":
     def get_order_side(opportunity: detector.ShortTicker):
         return 'buy' if opportunity.reversed else 'sell'
 
-    def get_symbol(opportunity: detector.ShortTicker):
-        if opportunity.reversed:
-            return str(symbols.Symbol(f"{opportunity.symbol.quote}/{opportunity.symbol.base}"))
-        return str(opportunity.symbol)
-
     # Display arbitrage detection result
     print("-------------------------------------------")
     print(f"New {round(best_profit, 4)}% {exchange_name} opportunity:")
     for i in range(3):
-        print(f"{i+1}. {get_order_side(best_opportunities[i])} {get_symbol(best_opportunities[i])}")
+        print(f"{i+1}. {get_order_side(best_opportunities[i])} {str(best_opportunities[i].symbol)}")
     print("-------------------------------------------")
 
     if benchmark:

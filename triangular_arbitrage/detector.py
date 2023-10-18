@@ -1,7 +1,7 @@
 # pylint: disable=W0702, C0325
 
 import ccxt.async_support as ccxt
-from typing import List
+from typing import List, Tuple
 from tqdm.auto import tqdm
 from itertools import combinations
 from dataclasses import dataclass
@@ -37,7 +37,7 @@ def get_last_prices(exchange_time, tickers):
         if tickers[key]['close'] is not None and not is_delisted_symbols(exchange_time, tickers[key])
     ]
 
-def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
+def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
     # pylint: disable=W1114
     ticker_dict = {str(ticker.symbol): ticker for ticker in tickers if ticker.symbol is not None}
 
@@ -84,6 +84,12 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> List[ShortTicker]:
         if profit > best_profit:
             best_profit = profit
             best_triplet = [a_to_b, b_to_c, c_to_a]
+
+    # restore original symbols for reversed pairs
+    best_triplet = [
+        ShortTicker(symbols.Symbol(f"{triplet.symbol.quote}/{triplet.symbol.base}"), triplet.last_price, reversed=True) 
+        if triplet.reversed else triplet 
+        for triplet in best_triplet]
 
     return best_triplet, best_profit
 
