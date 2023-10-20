@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="illustration.jpeg" width="250px" height="250px" alt="Triangular illustration">
+</p>
+
 # Triangular Arbitrage by OctoBot [1.0.1](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
 [![PyPI](https://img.shields.io/pypi/v/OctoBot-Triangular-Arbitrage.svg)](https://pypi.python.org/pypi/OctoBot-Triangular-Arbitrage/)
 [![Dockerhub](https://img.shields.io/docker/pulls/drakkarsoftware/octobot-triangular-arbitrage.svg?logo=docker)](https://hub.docker.com/r/drakkarsoftware/octobot-triangular-arbitrage)
