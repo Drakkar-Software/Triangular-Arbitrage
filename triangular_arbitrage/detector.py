@@ -29,12 +29,14 @@ def is_delisted_symbols(exchange_time, ticker, threshold = 1 * constants.DAYS_TO
     ticker_time = ticker['timestamp']
     return not (exchange_time - ticker_time <= threshold)
 
-def get_last_prices(exchange_time, tickers):
+def get_last_prices(exchange_time, tickers, ignored_symbols):
     return [
         ShortTicker(symbol=get_symbol_from_key(key), 
         last_price=tickers[key]['close']) 
         for key, _ in tickers.items()
-        if tickers[key]['close'] is not None and not is_delisted_symbols(exchange_time, tickers[key])
+        if tickers[key]['close'] is not None 
+        and not is_delisted_symbols(exchange_time, tickers[key]) 
+        and str(get_symbol_from_key(key)) not in ignored_symbols
     ]
 
 def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
@@ -101,12 +103,12 @@ async def get_exchange_data(exchange_name):
     await exchange.close()
     return tickers, exchange_time
 
-async def get_exchange_last_prices(exchange_name):
+async def get_exchange_last_prices(exchange_name, ignored_symbols):
     tickers, exchange_time = await get_exchange_data(exchange_name)
-    last_prices = get_last_prices(exchange_time, tickers)
+    last_prices = get_last_prices(exchange_time, tickers, ignored_symbols)
     return last_prices
 
-async def run_detection(exchange_name):
-    last_prices = await get_exchange_last_prices(exchange_name)
+async def run_detection(exchange_name, ignored_symbols=None):
+    last_prices = await get_exchange_last_prices(exchange_name, ignored_symbols or [])
     best_opportunity, best_profit = get_best_opportunity(last_prices)    
     return best_opportunity, best_profit
