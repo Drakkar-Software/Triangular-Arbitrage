@@ -27,7 +27,7 @@ def get_symbol_from_key(key_symbol: str) -> symbols.Symbol:
 
 def is_delisted_symbols(exchange_time, ticker, threshold = 1 * constants.DAYS_TO_SECONDS * constants.MSECONDS_TO_SECONDS) -> bool:
     ticker_time = ticker['timestamp']
-    return ticker_time is None or not (exchange_time - ticker_time <= threshold)
+    return ticker_time is not None or not (exchange_time - ticker_time <= threshold)
 
 def get_last_prices(exchange_time, tickers, ignored_symbols):
     return [
