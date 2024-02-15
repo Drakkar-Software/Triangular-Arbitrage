@@ -40,6 +40,11 @@ New 1.0354% binance opportunity:
 -------------------------------------------
 ```
 
+### Configuration
+To change the exchange edit `main.py` `exchange_name` value to the desired exchange. It should match the exchange [ccxt id value](https://github.com/ccxt/ccxt?tab=readme-ov-file#certified-cryptocurrency-exchanges)
+
+You can also provide a list of symbol to ignore when calling `run_detection` using `ignored_symbols`.
+
 ## Help
 
 You can join any OctoBot community to get help [![Discord](https://img.shields.io/discord/530629985661222912.svg?logo=discord&label=Discord)](https://octobot.click/gh-discord) [![Telegram Chat](https://img.shields.io/badge/telegram-chat-green.svg?logo=telegram&label=Telegram)](https://octobot.click/gh-telegram)
