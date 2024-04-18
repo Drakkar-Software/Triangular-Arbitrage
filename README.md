@@ -2,7 +2,7 @@
   <img src="illustration.jpeg" width="250px" height="250px" alt="Triangular illustration">
 </p>
 
-# Triangular Arbitrage by OctoBot [1.0.5](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
+# Triangular Arbitrage by OctoBot [1.0.6](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
 [![PyPI](https://img.shields.io/pypi/v/OctoBot-Triangular-Arbitrage.svg)](https://pypi.python.org/pypi/OctoBot-Triangular-Arbitrage/)
 [![Dockerhub](https://img.shields.io/docker/pulls/drakkarsoftware/octobot-triangular-arbitrage.svg?logo=docker)](https://hub.docker.com/r/drakkarsoftware/octobot-triangular-arbitrage)
 
@@ -43,7 +43,7 @@ New 1.0354% binance opportunity:
 ### Configuration
 To change the exchange edit `main.py` `exchange_name` value to the desired exchange. It should match the exchange [ccxt id value](https://github.com/ccxt/ccxt?tab=readme-ov-file#certified-cryptocurrency-exchanges)
 
-You can also provide a list of symbol to ignore when calling `run_detection` using `ignored_symbols`.
+You can also provide a list of symbol to ignore when calling `run_detection` using `ignored_symbols` and a list of symbol to whitelist using `whitelisted_symbols`.
 
 ## Help
 
