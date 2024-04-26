@@ -83,7 +83,7 @@ def get_last_prices(exchange_time, tickers, markets, ignored_symbols, filters: O
     ]
 
 
-def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
+def get_best_opportunity(tickers: List[ShortTicker]):
     # pylint: disable=W1114
     ticker_dict = {str(ticker.symbol): ticker for ticker in tickers if ticker.symbol is not None}
 
@@ -99,12 +99,13 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
     def get_opportunity_symbol(a, b):
         return f"{a}/{b}"
 
-    # Try all combinations of three currencies.
-    for a, b, c in tqdm(combinations(currencies, 3)):
+    # Try all combinations of four currencies.
+    for a, b, c, d in tqdm(combinations(currencies, 4)):
         # Look up the tickers in the dictionary instead of searching through the list.
         a_to_b = ticker_dict.get(get_opportunity_symbol(a, b))
         b_to_c = ticker_dict.get(get_opportunity_symbol(b, c))
-        c_to_a = ticker_dict.get(get_opportunity_symbol(c, a))
+        c_to_d = ticker_dict.get(get_opportunity_symbol(c, d))
+        d_to_a = ticker_dict.get(get_opportunity_symbol(d, a))
 
         # If the ticker does not exist, try the inverse
         if not a_to_b:
@@ -117,19 +118,23 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
             if c_to_b:
                 b_to_c = ShortTicker(symbols.Symbol(get_opportunity_symbol(b, c)), 1 / c_to_b.last_price, reversed=True)
 
-        if not c_to_a:
-            a_to_c = ticker_dict.get(get_opportunity_symbol(a, c))
-            if a_to_c:
-                c_to_a = ShortTicker(symbols.Symbol(get_opportunity_symbol(c, a)), 1 / a_to_c.last_price, reversed=True)
+        if not c_to_d:
+            d_to_c = ticker_dict.get(get_opportunity_symbol(d, c))
+            if d_to_c:
+                c_to_d = ShortTicker(symbols.Symbol(get_opportunity_symbol(c, d)), 1 / d_to_c.last_price, reversed=True)
 
-        if not all([a_to_b, b_to_c, c_to_a]):
+        if not d_to_a:
+            a_to_d = ticker_dict.get(get_opportunity_symbol(a, d))
+            if a_to_d:
+                d_to_a = ShortTicker(symbols.Symbol(get_opportunity_symbol(d, a)), 1 / a_to_d.last_price, reversed=True)
+
+        if not all([a_to_b, b_to_c, c_to_d, d_to_a]):
             continue
 
-        profit = a_to_b.last_price * b_to_c.last_price * c_to_a.last_price
-
+        profit = a_to_b.last_price * b_to_c.last_price * c_to_d.last_price * d_to_a.last_price
         if profit > best_profit:
             best_profit = profit
-            best_triplet = [a_to_b, b_to_c, c_to_a]
+            best_triplet = [a_to_b, b_to_c, c_to_d, d_to_a]
 
     if best_triplet is not None:
         # restore original symbols for reversed pairs
@@ -161,7 +166,8 @@ async def get_exchange_last_prices(exchange_name, ignored_symbols,
 
 async def run_detection(exchange_name,
                         ignored_symbols=None,
-                        filters: Optional[Filters] = None):
+                        filters: Optional[Filters] = None,
+                        allowed_last_assets: Optional[List[str]] = None):
     last_prices = await get_exchange_last_prices(exchange_name, ignored_symbols or [], filters)
     best_opportunity, best_profit = get_best_opportunity(last_prices)
     return best_opportunity, best_profit
