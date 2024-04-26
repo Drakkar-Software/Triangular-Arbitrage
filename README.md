@@ -43,7 +43,7 @@ New 1.0354% binance opportunity:
 ### Configuration
 To change the exchange edit `main.py` `exchange_name` value to the desired exchange. It should match the exchange [ccxt id value](https://github.com/ccxt/ccxt?tab=readme-ov-file#certified-cryptocurrency-exchanges)
 
-You can also provide a list of symbol to ignore when calling `run_detection` using `ignored_symbols` and a list of symbol to whitelist using `whitelisted_symbols`.
+You can also provide a list of symbol to ignore when calling `run_detection` using `ignored_symbols` and a list of filters.
 
 ## Help
 

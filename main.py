@@ -14,7 +14,8 @@ if __name__ == "__main__":
     # start arbitrage detection
     print("Scanning...")
     exchange_name = "binance"
-    best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name))
+    best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name,
+                                                                         filters=detector.Filters(whitelisted_assets=["FDUSD", "BTC", "ETH", "BNB"])))
     def opportunity_symbol(opportunity):
         return symbols.parse_symbol(str(opportunity.symbol))
     
@@ -24,7 +25,7 @@ if __name__ == "__main__":
     if best_opportunities is not None:
         # Display arbitrage detection result
         print("-------------------------------------------")
-        print(f"New {round(best_profit, 4)}% {exchange_name} opportunity:")
+        print(f"New {round(best_profit * 100, 4)}% {exchange_name} opportunity:")
         for i in range(3):
             print(f"{i+1}. {get_order_side(best_opportunities[i])} {str(best_opportunities[i].symbol)}")
         print("-------------------------------------------")
