@@ -2,8 +2,6 @@
 
 import ccxt.async_support as ccxt
 from typing import List, Tuple
-from tqdm.auto import tqdm
-from itertools import combinations
 from dataclasses import dataclass
 import networkx as nx
 
@@ -48,9 +46,6 @@ def get_last_prices(exchange_time, tickers, ignored_symbols, whitelisted_symbols
 
 
 def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
-    # pylint: disable=W1114
-    ticker_dict = {str(ticker.symbol): ticker for ticker in tickers if ticker.symbol is not None}
-
     # Build a directed graph of currencies
     graph = nx.DiGraph()
 

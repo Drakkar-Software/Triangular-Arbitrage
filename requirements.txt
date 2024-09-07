@@ -1,4 +1,3 @@
-tqdm
 ccxt
 networkx[default]
 
