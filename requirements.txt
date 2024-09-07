@@ -1,4 +1,5 @@
 tqdm
 ccxt
+networkx[default]
 
 OctoBot-Commons>=1.9, <1.10

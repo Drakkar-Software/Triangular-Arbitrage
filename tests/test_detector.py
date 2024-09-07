@@ -1,14 +1,57 @@
-import triangular_arbitrage.detector
-import octobot_commons.symbols
+import pytest
+import octobot_commons.symbols as symbols
+from triangular_arbitrage.detector import ShortTicker, get_best_opportunity
 
-def test_get_best_opportunity():
-    tickers = [
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('A/B'), 1.2),
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('B/C'), 1.3),
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('C/A'), 0.7),
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('A/C'), 1.4),
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('B/A'), 0.8),
-        triangular_arbitrage.detector.ShortTicker(octobot_commons.symbols.Symbol('C/B'), 0.9)
+
+@pytest.fixture
+def sample_tickers():
+    return [
+        ShortTicker(symbol=symbols.Symbol('BTC/USDT'), last_price=30000),
+        ShortTicker(symbol=symbols.Symbol('ETH/USDT'), last_price=2000),
+        ShortTicker(symbol=symbols.Symbol('XRP/USDT'), last_price=0.5),
+        ShortTicker(symbol=symbols.Symbol('LTC/USDT'), last_price=100),
+        ShortTicker(symbol=symbols.Symbol('BCH/USDT'), last_price=200),
     ]
-    best_triplet, best_profit = triangular_arbitrage.detector.get_best_opportunity(tickers)
-    assert best_profit > 0
+
+
+def test_get_best_opportunity_handles_empty_tickers():
+    best_opportunity, best_profit = get_best_opportunity([])
+    assert best_profit == 0
+    assert best_opportunity is None
+
+
+def test_get_best_opportunity_handles_no_triplet_opportunity(sample_tickers):
+    sample_tickers.append(ShortTicker(symbol=symbols.Symbol('DOT/USDT'), last_price=0.05))
+    best_opportunity, best_profit = get_best_opportunity(sample_tickers)
+    assert best_profit == 0
+    assert best_opportunity is None
+
+
+def test_get_best_opportunity_returns_correct_triplet_with_correct_tickers():
+    tickers = [
+        ShortTicker(symbol=symbols.Symbol('BTC/USDT'), last_price=30000),
+        ShortTicker(symbol=symbols.Symbol('ETH/BTC'), last_price=0.3),
+        ShortTicker(symbol=symbols.Symbol('ETH/USDT'), last_price=2000),
+    ]
+    best_opportunity, best_profit = get_best_opportunity(tickers)
+    assert len(best_opportunity) == 3
+    assert best_profit == 4.5
+    assert all(isinstance(ticker, ShortTicker) for ticker in best_opportunity)
+
+
+def test_get_best_opportunity_returns_correct_triplet_with_multiple_tickers():
+    tickers = [
+        ShortTicker(symbol=symbols.Symbol('BTC/USDT'), last_price=30000),
+        ShortTicker(symbol=symbols.Symbol('ETH/BTC'), last_price=0.3),
+        ShortTicker(symbol=symbols.Symbol('ETH/USDT'), last_price=2000),
+        ShortTicker(symbol=symbols.Symbol('ETH/USDC'), last_price=1900),
+        ShortTicker(symbol=symbols.Symbol('BTC/USDC'), last_price=35000),
+        ShortTicker(symbol=symbols.Symbol('USDC/USDT'), last_price=1.1),
+        ShortTicker(symbol=symbols.Symbol('USDC/TUSD'), last_price=0.95),
+        ShortTicker(symbol=symbols.Symbol('ETH/TUSD'), last_price=1950),
+        ShortTicker(symbol=symbols.Symbol('BTC/TUSD'), last_price=32500),
+    ]
+    best_opportunity, best_profit = get_best_opportunity(tickers)
+    assert len(best_opportunity) == 3
+    assert best_profit == 5.526315789473684
+    assert all(isinstance(ticker, ShortTicker) for ticker in best_opportunity)
