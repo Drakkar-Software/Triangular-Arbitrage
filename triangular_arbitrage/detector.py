@@ -64,12 +64,12 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
         tickers_in_cycle = []
 
         # Calculate the profits along the cycle
-        for i in range(len(cycle)):
-            base = cycle[i]
-            quote = cycle[(i + 1) % len(cycle)]  # Wrap around
+        for i, base in enumerate(cycle):
+            quote = cycle[(i + 1) % len(cycle)]  # Wrap around to complete the cycle
             ticker = graph[base][quote]['ticker']
             tickers_in_cycle.append(ticker)
             profit *= ticker.last_price
+
 
         if profit > best_profit:
             best_profit = profit
