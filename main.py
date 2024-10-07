@@ -29,9 +29,23 @@ if __name__ == "__main__":
     if best_opportunities is not None:
         # Display arbitrage detection result
         print("-------------------------------------------")
-        print(f"New {round(best_profit - 1, 5) * 100}% {exchange_name} opportunity:")
-        for i in range(3):
-            print(f"{i + 1}. {get_order_side(best_opportunities[i])} {str(best_opportunities[i].symbol)}")
+        total_profit_percentage = round((best_profit - 1) * 100, 5)
+        print(f"New {total_profit_percentage}% {exchange_name} opportunity:")
+        for i, opportunity in enumerate(best_opportunities):
+            # Get the base and quote currencies
+            base_currency = opportunity.symbol.base
+            quote_currency = opportunity.symbol.quote
+
+            # Format the output as below (example):
+            #   -------------------------------------------
+            # New 2.35% binance opportunity:
+            # 1. SELL USD to EUR at 0.85000 (-17.65%)
+            # 2. BUY EUR to GBP at 1.10000 (+10.00%)
+            # 3. SELL GBP to USD at 1.30000 (+30.00%)
+            # -------------------------------------------
+            percentage_change = (opportunity.last_price - 1) * 100 if opportunity.reversed else (1 - 1 / opportunity.last_price) * 100
+            order_side = get_order_side(opportunity)
+            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f} ({'+' if percentage_change > 0 else ''}{percentage_change:.2f}%)")
         print("-------------------------------------------")
     else:
         print("No opportunity detected")
