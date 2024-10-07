@@ -34,9 +34,9 @@ Example output on Binance:
 ```
 -------------------------------------------
 New 2.35% binance opportunity:
-1. SELL USD to EUR at 0.85000 (-17.65%)
-2. BUY EUR to GBP at 1.10000 (+10.00%)
-3. SELL GBP to USD at 1.30000 (+30.00%)
+1. SELL USD to EUR at 0.85000
+2. BUY EUR to GBP at 1.1000
+3. SELL GBP to USD at 1.30000
 -------------------------------------------
 ```
 

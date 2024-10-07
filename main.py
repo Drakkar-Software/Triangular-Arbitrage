@@ -39,13 +39,12 @@ if __name__ == "__main__":
             # Format the output as below (example):
             #   -------------------------------------------
             # New 2.35% binance opportunity:
-            # 1. SELL USD to EUR at 0.85000 (-17.65%)
-            # 2. BUY EUR to GBP at 1.10000 (+10.00%)
-            # 3. SELL GBP to USD at 1.30000 (+30.00%)
+            # 1. SELL USD to EUR at 0.85000
+            # 2. BUY EUR to GBP at 1.10000
+            # 3. SELL GBP to USD at 1.30000
             # -------------------------------------------
-            percentage_change = (opportunity.last_price - 1) * 100 if opportunity.reversed else (1 - 1 / opportunity.last_price) * 100
             order_side = get_order_side(opportunity)
-            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f} ({'+' if percentage_change > 0 else ''}{percentage_change:.2f}%)")
+            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f})")
         print("-------------------------------------------")
     else:
         print("No opportunity detected")
