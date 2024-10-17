@@ -45,7 +45,7 @@ def get_last_prices(exchange_time, tickers, ignored_symbols, whitelisted_symbols
     ]
 
 
-def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
+def get_best_triangular_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
     graph = nx.DiGraph()
 
@@ -85,6 +85,46 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
 
     return best_triplet, best_profit
 
+def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
+    # Build a directed graph of currencies
+    graph = nx.DiGraph()
+
+    for ticker in tickers:
+        if ticker.symbol is not None:
+            graph.add_edge(ticker.symbol.base, ticker.symbol.quote, ticker=ticker)
+            graph.add_edge(ticker.symbol.quote, ticker.symbol.base,
+                           ticker=ShortTicker(symbols.Symbol(f"{ticker.symbol.quote}/{ticker.symbol.base}"),
+                                              1 / ticker.last_price, reversed=True))
+
+    best_profit = 0
+    best_cycle = None
+
+    # Find all cycles in the graph (not just len = 3)
+    for cycle in nx.simple_cycles(graph):
+        profit = 1
+        tickers_in_cycle = []
+
+        # Calculate the profits along the cycle
+        for i, base in enumerate(cycle):
+            quote = cycle[(i + 1) % len(cycle)]  # Wrap around to complete the cycle
+            ticker = graph[base][quote]['ticker']
+            tickers_in_cycle.append(ticker)
+            profit *= ticker.last_price
+
+
+        if profit > best_profit:
+            best_profit = profit
+            best_cycle = tickers_in_cycle
+
+    if best_cycle is not None:
+        best_cycle = [
+            ShortTicker(symbols.Symbol(f"{ticker.symbol.quote}/{ticker.symbol.base}"), ticker.last_price, reversed=True)
+            if ticker.reversed else ticker
+            for ticker in best_cycle
+        ]
+
+    return best_cycle, best_profit
+
 
 async def get_exchange_data(exchange_name):
     exchange_class = getattr(ccxt, exchange_name)
@@ -103,5 +143,5 @@ async def get_exchange_last_prices(exchange_name, ignored_symbols, whitelisted_s
 
 async def run_detection(exchange_name, ignored_symbols=None, whitelisted_symbols=None):
     last_prices = await get_exchange_last_prices(exchange_name, ignored_symbols or [], whitelisted_symbols)
-    best_opportunity, best_profit = get_best_opportunity(last_prices)
+    best_opportunity, best_profit = get_best_opportunity(last_prices) # default is best opportuinty for all cycles
     return best_opportunity, best_profit

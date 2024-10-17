@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-from triangular_arbitrage import PROJECT_NAME, VERSION
+from arbitrage_opportunity import PROJECT_NAME, VERSION
 
 PACKAGES = find_packages(
     exclude=[

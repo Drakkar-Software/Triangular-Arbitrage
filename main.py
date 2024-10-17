@@ -3,7 +3,7 @@ import asyncio
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
 
-import triangular_arbitrage.detector as detector
+import arbitrage_opportunity.detector as detector
 
 if __name__ == "__main__":
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
@@ -14,7 +14,9 @@ if __name__ == "__main__":
 
     # start arbitrage detection
     print("Scanning...")
-    exchange_name = "binance"
+    exchanges = ['binance', 'coinbase', 'kucoin', 'binanceus']
+    exchange_name = exchanges[3] # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
+
     best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name))
 
 
@@ -36,15 +38,19 @@ if __name__ == "__main__":
             base_currency = opportunity.symbol.base
             quote_currency = opportunity.symbol.quote
 
-            # Format the output as below (example):
-            #   -------------------------------------------
-            # New 2.35% binance opportunity:
-            # 1. SELL USD to EUR at 0.85000
-            # 2. BUY EUR to GBP at 1.10000
-            # 3. SELL GBP to USD at 1.30000
+            # Format the output as below (real live example):
+            # -------------------------------------------
+            # New 2.33873% binanceus opportunity:
+            # 1. buy DOGE to BTC at 552486.18785
+            # 2. sell DOGE to USDT at 0.12232
+            # 3. buy ETH to USDT at 0.00038
+            # 4. buy ADA to ETH at 7570.02271
+            # 5. sell ADA to USDC at 0.35000
+            # 6. buy SOL to USDC at 0.00662
+            # 7. sell SOL to BTC at 0.00226
             # -------------------------------------------
             order_side = get_order_side(opportunity)
-            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f})")
+            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f}")
         print("-------------------------------------------")
     else:
         print("No opportunity detected")
