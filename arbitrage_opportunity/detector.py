@@ -87,17 +87,6 @@ def get_best_triangular_opportunity(tickers: List[ShortTicker]) -> Tuple[List[Sh
 
 def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
-    tickers = [
-        ShortTicker(symbol=symbols.Symbol('BTC/USDT'), last_price=30000),
-        ShortTicker(symbol=symbols.Symbol('ETH/BTC'), last_price=0.3),
-        ShortTicker(symbol=symbols.Symbol('ETH/USDT'), last_price=2000),
-        ShortTicker(symbol=symbols.Symbol('ETH/USDC'), last_price=1900),
-        ShortTicker(symbol=symbols.Symbol('BTC/USDC'), last_price=35000),
-        ShortTicker(symbol=symbols.Symbol('USDC/USDT'), last_price=1.1),
-        ShortTicker(symbol=symbols.Symbol('USDC/TUSD'), last_price=0.95),
-        ShortTicker(symbol=symbols.Symbol('ETH/TUSD'), last_price=1950),
-        ShortTicker(symbol=symbols.Symbol('BTC/TUSD'), last_price=32500),
-    ]
     graph = nx.DiGraph()
 
     for ticker in tickers:
