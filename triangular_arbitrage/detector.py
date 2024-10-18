@@ -47,45 +47,9 @@ def get_last_prices(exchange_time, tickers, ignored_symbols, whitelisted_symbols
 
 def get_best_triangular_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
-    graph = nx.DiGraph()
+    return get_best_opportunity(tickers, 3)
 
-    for ticker in tickers:
-        if ticker.symbol is not None:
-            graph.add_edge(ticker.symbol.base, ticker.symbol.quote, ticker=ticker)
-            graph.add_edge(ticker.symbol.quote, ticker.symbol.base,
-                           ticker=ShortTicker(symbols.Symbol(f"{ticker.symbol.quote}/{ticker.symbol.base}"),
-                                              1 / ticker.last_price, reversed=True))
-
-    best_profit = 0
-    best_triplet = None
-
-    for cycle in nx.simple_cycles(graph):
-        if len(cycle) != 3:
-            continue
-
-        a, b, c = cycle
-        a_to_b = graph[a][b]['ticker']
-        b_to_c = graph[b][c]['ticker']
-        c_to_a = graph[c][a]['ticker']
-
-        profit = a_to_b.last_price * b_to_c.last_price * c_to_a.last_price
-
-        if profit > best_profit:
-            best_profit = profit
-            best_triplet = [a_to_b, b_to_c, c_to_a]
-
-    if best_triplet is not None:
-        # restore original symbols for reversed pairs
-        best_triplet = [
-            ShortTicker(symbols.Symbol(f"{triplet.symbol.quote}/{triplet.symbol.base}"), triplet.last_price,
-                        reversed=True)
-            if triplet.reversed else triplet
-            for triplet in best_triplet
-        ]
-
-    return best_triplet, best_profit
-
-def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker], float]:
+def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 50) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
     graph = nx.DiGraph()
 
@@ -99,8 +63,11 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
     best_profit = 0
     best_cycle = None
 
-    # Find all cycles in the graph (not just len = 3)
+    # Find all cycles in the graph with a length <= max_cycle
     for cycle in nx.simple_cycles(graph):
+        if len(cycle) > max_cycle:
+            continue  # Skip cycles longer than max_cycle
+
         profit = 1
         tickers_in_cycle = []
 
@@ -110,7 +77,6 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
             ticker = graph[base][quote]['ticker']
             tickers_in_cycle.append(ticker)
             profit *= ticker.last_price
-
 
         if profit > best_profit:
             best_profit = profit
@@ -124,6 +90,7 @@ def get_best_opportunity(tickers: List[ShortTicker]) -> Tuple[List[ShortTicker],
         ]
 
     return best_cycle, best_profit
+
 
 
 async def get_exchange_data(exchange_name):

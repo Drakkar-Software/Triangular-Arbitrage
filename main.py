@@ -3,7 +3,7 @@ import asyncio
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
 
-import arbitrage_opportunity.detector as detector
+import triangular_arbitrage.detector as detector
 
 if __name__ == "__main__":
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
