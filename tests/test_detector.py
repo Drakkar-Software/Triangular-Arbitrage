@@ -94,5 +94,5 @@ def test_get_best_opportunity_returns_correct_cycle_with_multiple_tickers():
     ]
     best_opportunity, best_profit = get_best_opportunity(tickers)
     assert len(best_opportunity) >= 3  # Handling cycles with more than 3 tickers
-    assert best_profit == 5.775000000000001
+    assert best_profit == 5.775
     assert all(isinstance(ticker, ShortTicker) for ticker in best_opportunity)
