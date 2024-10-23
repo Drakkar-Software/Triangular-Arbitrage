@@ -60,7 +60,7 @@ def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 50) -> Tup
                            ticker=ShortTicker(symbols.Symbol(f"{ticker.symbol.quote}/{ticker.symbol.base}"),
                                               1 / ticker.last_price, reversed=True))
 
-    best_profit = 0
+    best_profit = 1
     best_cycle = None
 
     # Find all cycles in the graph with a length <= max_cycle
