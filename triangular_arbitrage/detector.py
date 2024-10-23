@@ -49,7 +49,7 @@ def get_best_triangular_opportunity(tickers: List[ShortTicker]) -> Tuple[List[Sh
     # Build a directed graph of currencies
     return get_best_opportunity(tickers, 3)
 
-def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 50) -> Tuple[List[ShortTicker], float]:
+def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 10) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
     graph = nx.DiGraph()
 
