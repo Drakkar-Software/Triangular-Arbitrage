@@ -2,15 +2,15 @@
   <img src="illustration.jpeg" width="250px" height="250px" alt="Triangular illustration">
 </p>
 
-# Triangular Arbitrage by OctoBot [1.1.1](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
+# Arbitrage Opportunity Detection by OctoBot [1.1.1](https://github.com/Drakkar-Software/Triangular-Arbitrage/blob/master/CHANGELOG.md)
 [![PyPI](https://img.shields.io/pypi/v/OctoBot-Triangular-Arbitrage.svg)](https://pypi.python.org/pypi/OctoBot-Triangular-Arbitrage/)
 [![Dockerhub](https://img.shields.io/docker/pulls/drakkarsoftware/octobot-triangular-arbitrage.svg?logo=docker)](https://hub.docker.com/r/drakkarsoftware/octobot-triangular-arbitrage)
 
-This Python-based project utilizes the [ccxt library](https://github.com/ccxt/ccxt) and [OctoBot library](https://github.com/Drakkar-Software/OctoBot) to detect potential triangular arbitrage opportunities in cryptocurrency markets.
+This Python-based project utilizes the [ccxt library](https://github.com/ccxt/ccxt) and the [OctoBot library](https://github.com/Drakkar-Software/OctoBot) to detect potential arbitrage opportunities across multiple assets in cryptocurrency markets. It identifies profitable cycles where you can trade through a series of assets and return to the original asset with a potential gain, making it applicable for arbitrage strategies beyond just triangular cycles.
 
 ## Description
 
-Triangular arbitrage is a process where you trade from one currency to another, and then to another, and finally back to the original currency. The goal is to exploit differences in prices between the three currencies to make a profit. For example, you could start with USD, buy BTC, then use the BTC to buy ETH, and finally sell the ETH for USD. If the prices are right, you could end up with more USD than you started with. This project provides a method to identify the best triangular arbitrage opportunity given a list of last prices for different cryptocurrency pairs. It's a simple and effective tool for anyone interested in cryptocurrency trading and arbitrage strategies.
+Arbitrage trading is a process where you trade from one asset or currency to another, and then continue trading through a series of assets until you eventually return to the original asset or currency. The goal is to exploit price differences between multiple assets to generate a profit. For example, you could start with USD, buy BTC, use the BTC to buy ETH, trade the ETH for XRP, and finally sell the XRP back to USD. If the prices are favorable throughout the cycle, you could end up with more USD than you started with. This project provides a method to identify the best arbitrage opportunities in a multi-asset cycle, given a list of last prices for different cryptocurrency pairs. It's a versatile and effective tool for anyone interested in cryptocurrency trading and arbitrage strategies across various currencies and assets.
 
 ## Getting Started
 
@@ -33,10 +33,14 @@ python3 main.py
 Example output on Binance:
 ```
 -------------------------------------------
-New 1.0354% binance opportunity:
-1. sell WIN/BNB
-2. sell BNB/BRL
-3. buy WIN/BRL
+New 2.33873% binanceus opportunity:
+# 1. buy DOGE to BTC at 552486.18785
+# 2. sell DOGE to USDT at 0.12232
+# 3. buy ETH to USDT at 0.00038
+# 4. buy ADA to ETH at 7570.02271
+# 5. sell ADA to USDC at 0.35000
+# 6. buy SOL to USDC at 0.00662
+# 7. sell SOL to BTC at 0.00226
 -------------------------------------------
 ```
 
