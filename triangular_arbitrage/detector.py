@@ -49,6 +49,7 @@ def get_best_triangular_opportunity(tickers: List[ShortTicker]) -> Tuple[List[Sh
     # Build a directed graph of currencies
     return get_best_opportunity(tickers, 3)
 
+
 def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 10) -> Tuple[List[ShortTicker], float]:
     # Build a directed graph of currencies
     graph = nx.DiGraph()
@@ -92,7 +93,6 @@ def get_best_opportunity(tickers: List[ShortTicker], max_cycle: int = 10) -> Tup
     return best_cycle, best_profit
 
 
-
 async def get_exchange_data(exchange_name):
     exchange_class = getattr(ccxt, exchange_name)
     exchange = exchange_class()
@@ -108,7 +108,8 @@ async def get_exchange_last_prices(exchange_name, ignored_symbols, whitelisted_s
     return last_prices
 
 
-async def run_detection(exchange_name, ignored_symbols=None, whitelisted_symbols=None):
+async def run_detection(exchange_name, ignored_symbols=None, whitelisted_symbols=None, max_cycle=None):
     last_prices = await get_exchange_last_prices(exchange_name, ignored_symbols or [], whitelisted_symbols)
-    best_opportunity, best_profit = get_best_opportunity(last_prices) # default is best opportunity for all cycles
+    # default is the best opportunity for all cycles
+    best_opportunity, best_profit = get_best_opportunity(last_prices, max_cycle=max_cycle)
     return best_opportunity, best_profit

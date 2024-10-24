@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     # start arbitrage detection
     print("Scanning...")
-    exchange_name = "binance" # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
+    exchange_name = "binanceus"  # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
 
     best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name))
 
@@ -40,16 +40,19 @@ if __name__ == "__main__":
             # Format the output as below (real live example):
             # -------------------------------------------
             # New 2.33873% binanceus opportunity:
-            # 1. buy DOGE to BTC at 552486.18785
-            # 2. sell DOGE to USDT at 0.12232
-            # 3. buy ETH to USDT at 0.00038
-            # 4. buy ADA to ETH at 7570.02271
-            # 5. sell ADA to USDC at 0.35000
-            # 6. buy SOL to USDC at 0.00662
-            # 7. sell SOL to BTC at 0.00226
+            # 1. buy DOGE with BTC at 552486.18785
+            # 2. sell DOGE for USDT at 0.12232
+            # 3. buy ETH with USDT at 0.00038
+            # 4. buy ADA with ETH at 7570.02271
+            # 5. sell ADA for USDC at 0.35000
+            # 6. buy SOL with USDC at 0.00662
+            # 7. sell SOL for BTC at 0.00226
             # -------------------------------------------
             order_side = get_order_side(opportunity)
-            print(f"{i+1}. {order_side} {base_currency} to {quote_currency} at {opportunity.last_price:.5f}")
+            print(
+                f"{i + 1}. {order_side} {base_currency} "
+                f"{'with' if order_side == 'buy' else 'for'} "
+                f"{quote_currency} at {opportunity.last_price:.5f}")
         print("-------------------------------------------")
     else:
         print("No opportunity detected")
