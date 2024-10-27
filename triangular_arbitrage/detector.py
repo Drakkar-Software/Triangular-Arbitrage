@@ -108,7 +108,7 @@ async def get_exchange_last_prices(exchange_name, ignored_symbols, whitelisted_s
     return last_prices
 
 
-async def run_detection(exchange_name, ignored_symbols=None, whitelisted_symbols=None, max_cycle=None):
+async def run_detection(exchange_name, ignored_symbols=None, whitelisted_symbols=None, max_cycle=10):
     last_prices = await get_exchange_last_prices(exchange_name, ignored_symbols or [], whitelisted_symbols)
     # default is the best opportunity for all cycles
     best_opportunity, best_profit = get_best_opportunity(last_prices, max_cycle=max_cycle)
