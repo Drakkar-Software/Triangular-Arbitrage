@@ -6,6 +6,9 @@ import octobot_commons.os_util as os_util
 import triangular_arbitrage.detector as detector
 
 if __name__ == "__main__":
+    if hasattr(asyncio, "WindowsSelectorEventLoopPolicy"):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy()) # Windows handles asynchronous event loops
+    
     benchmark = os_util.parse_boolean_environment_var("IS_BENCHMARKING", "False")
     if benchmark:
         import time
