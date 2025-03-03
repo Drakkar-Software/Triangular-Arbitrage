@@ -12,6 +12,8 @@ This Python-based project utilizes the [ccxt library](https://github.com/ccxt/cc
 
 Arbitrage trading is a process where you trade from one asset or currency to another, and then continue trading through a series of assets until you eventually return to the original asset or currency. The goal is to exploit price differences between multiple assets to generate a profit. For example, you could start with USD, buy BTC, use the BTC to buy ETH, trade the ETH for XRP, and finally sell the XRP back to USD. If the prices are favorable throughout the cycle, you could end up with more USD than you started with. This project provides a method to identify the best arbitrage opportunities in a multi-asset cycle, given a list of last prices for different cryptocurrency pairs. It's a versatile and effective tool for anyone interested in cryptocurrency trading and arbitrage strategies across various currencies and assets.
 
+Note: the results do not account for fees during trades. This can have a significant impact on performance.
+
 ## Getting Started
 
 ### Dependencies
