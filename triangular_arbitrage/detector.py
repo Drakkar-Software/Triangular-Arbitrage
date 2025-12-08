@@ -15,6 +15,9 @@ class ShortTicker:
     last_price: float
     reversed: bool = False
 
+    def __repr__(self):
+        return f"ShortTicker(symbol={str(self.symbol)}, last_price={self.last_price}, reversed={self.reversed})"
+
 
 async def fetch_tickers(exchange):
     return await exchange.fetch_tickers() if exchange.has['fetchTickers'] else []
@@ -41,6 +44,7 @@ def get_last_prices(exchange_time, tickers, ignored_symbols, whitelisted_symbols
         if tickers[key]['close'] is not None
            and not is_delisted_symbols(exchange_time, tickers[key])
            and str(get_symbol_from_key(key)) not in ignored_symbols
+           and get_symbol_from_key(key).is_spot()
            and (whitelisted_symbols is None or str(get_symbol_from_key(key)) in whitelisted_symbols)
     ]
 
