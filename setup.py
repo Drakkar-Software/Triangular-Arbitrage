@@ -17,7 +17,7 @@ REQUIRED = open('requirements.txt').readlines()
 REQUIRES_PYTHON = '>=3.10'
 
 setup(
-    name=PROJECT_NAME,
+    name=PROJECT_NAME.lower().replace("-", "_"),
     version=VERSION,
     url='https://github.com/Drakkar-Software/Triangular-Arbitrage',
     author='Drakkar-Software',
