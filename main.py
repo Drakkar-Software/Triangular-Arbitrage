@@ -1,4 +1,7 @@
 import asyncio
+import os
+# allow minimal octobot_commons imports
+os.environ["USE_MINIMAL_LIBS"] = "true"
 
 import octobot_commons.symbols as symbols
 import octobot_commons.os_util as os_util
@@ -17,7 +20,7 @@ if __name__ == "__main__":
 
     # start arbitrage detection
     print("Scanning...")
-    exchange_name = "binanceus"  # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
+    exchange_name = "cryptocom"  # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
 
     best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name))
 
