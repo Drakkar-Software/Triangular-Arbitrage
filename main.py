@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     # start arbitrage detection
     print("Scanning...")
-    exchange_name = "binanceus"  # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
+    exchange_name = "bitget"  # allow pickable exchange_id from https://github.com/ccxt/ccxt/wiki/manual#exchanges
 
     best_opportunities, best_profit = asyncio.run(detector.run_detection(exchange_name, max_cycle=3))
 

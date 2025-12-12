@@ -20,7 +20,7 @@ class ShortTicker:
 
 
 async def fetch_tickers(exchange):
-    return await exchange.fetch_tickers() if exchange.has['fetchTickers'] else []
+    return await exchange.fetch_tickers() if exchange.has['fetchTickers'] else {}
 
 
 def get_symbol_from_key(key_symbol: str) -> symbols.Symbol:
@@ -101,9 +101,16 @@ async def get_exchange_data(exchange_name):
     exchange_class = getattr(ccxt, exchange_name)
     exchange = exchange_class()
     tickers = await fetch_tickers(exchange)
+    filtered_tickers = {
+        symbol: ticker
+        for symbol, ticker in tickers.items()
+        if exchange.markets.get(symbol, {}).get(
+            "active", True
+        ) is True
+    }
     exchange_time = exchange.milliseconds()
     await exchange.close()
-    return tickers, exchange_time
+    return filtered_tickers, exchange_time
 
 
 async def get_exchange_last_prices(exchange_name, ignored_symbols, whitelisted_symbols=None):
